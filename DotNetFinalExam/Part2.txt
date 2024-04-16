@@ -1,0 +1,84 @@
+Answer 1 :
+
+GET methode is used to retrieve  data from the data base or from the storage.
+
+Example,
+
+   public void OnGet()
+    {
+        Items = itemsRepository.GetItems();
+    }
+
+    In the ListofItems page I used the GET methode to retrieve Data from my Inventory.json file and display it.
+
+
+POST methode is used to storage the data into Data base or in storage.
+
+Example,
+
+    public IActionResult OnPost(Item item)
+    {
+
+        if (ModelState.IsValid && item.ItemPricePerUnit > 0 && item.ItemQuantityInStock > 0)
+        {
+            item.ItemId = itemsRepository.GetItems().Count + 1;
+            itemsRepository.AddItem(item);
+            return RedirectToPage();
+        }
+        return RedirectToPage();
+    }
+
+    Here, if the data is Valid then by using POST methode I storage Item it into the inventory.json file.
+    
+    Main differences : we can also use GET methode to storage data into database using QueryParameter , but it is not secure. 
+                       Because the data will show in the URL so, anyone can modified and access it.
+                       Example : http://localhost:5026/Item?ItemId=1
+
+                       While in POST, the data pass into body part as a result it is more secure.
+                       Example : http://localhost:5026/Add
+
+
+
+
+
+Answer 2:
+
+Interface is one type of class which contain only methodes with no implement and you can define it using interface keyword.
+The name of interface start With "I" like "IItemsRepository".
+The class who extend that Interface or want to use , that class responsible to provide implementation of that methode and its required. 
+
+Class can contain methode with implementation but Interface only contain methode declaration not implementation.
+
+
+Example:
+
+    public interface IItemsRepository
+    {
+        public void AddItem(Item item);
+        public List<Item> GetItems();   
+    }
+
+    Here I have created one Interface IItemsRepository with 2 methodes AddItem() and GetItems().
+
+    public class ItemRepositoryJSON : IItemsRepository
+    {
+        public void AddItem(Item item)
+        {
+        }
+
+        public List<Item> GetItems()
+        {
+            return new List<Item>();
+        }
+
+    }
+
+    To use interface the syntax is Class name ":" Interface name. Example, public class ItemRepositoryJSON : IItemsRepository
+
+    Class ItemRepositoryJSON want to use that interface IItemsRepository , so ItemRepositoryJSON need to provide the 
+    implementation of those methodes AddItem() and GetItems().
+
+    With the use of Interface it is easy to maintain Code, Code Readability and Project structure.
+
+    If I dont use interface and now I want to change the implementation or requirement then I need to change it in each and every file. 
+    But if I use Interface then I just have to implement that interface with new implementation and use it.
